@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormGroup, Grid, Paper, TextField } from "@mui/material";
+import * as usersApi from "../../utilities/users-api";
 
 export default function LoginForm({ handleChangeLoginView }) {
   const [credentials, setCredentials] = useState({
@@ -7,16 +9,21 @@ export default function LoginForm({ handleChangeLoginView }) {
     password: "",
   });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   function handleChange(evt) {
     setCredentials({
+      ...credentials,
       [evt.target.name]: evt.target.value,
     });
   }
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
     try {
+      const user = await usersApi.login(credentials);
+      setCredentials(user);
+      navigate("/messenger");
     } catch (error) {
       setError(error);
     }
@@ -33,6 +40,7 @@ export default function LoginForm({ handleChangeLoginView }) {
           alignItems: "center",
           justifyContent: "center",
         }}
+        onSubmit={handleSubmit}
       >
         <Paper sx={{ p: 5, width: "50%" }}>
           <FormGroup sx={{ m: 3 }}>
@@ -44,6 +52,7 @@ export default function LoginForm({ handleChangeLoginView }) {
           </FormGroup>
           <FormGroup sx={{ m: 3 }}>
             <TextField
+              type="password"
               name="password"
               placeholder="Password"
               onChange={handleChange}
@@ -58,7 +67,7 @@ export default function LoginForm({ handleChangeLoginView }) {
               {"Need an account?"}
             </Grid>
           </Grid>
-          <Button variant="outlined" sx={{ width: "90%", mt: 3 }}>
+          <Button type="submit" variant="outlined" sx={{ width: "90%", mt: 3 }}>
             Login
           </Button>
         </Paper>
