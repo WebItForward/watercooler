@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Box, Button, FormGroup, Grid, Paper, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import * as usersApi from "../../utilities/users-api";
 
 export default function SignUpForm({ handleChangeLoginView }) {
   const [credentials, setCredentials] = useState({
@@ -9,16 +11,21 @@ export default function SignUpForm({ handleChangeLoginView }) {
     password: "",
   });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   function handleChange(evt) {
     setCredentials({
+      ...credentials,
       [evt.target.name]: evt.target.value,
     });
   }
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
     try {
+      const user = await usersApi.signUp(credentials);
+      setCredentials(user);
+      navigate("/messenger");
     } catch (error) {
       setError(error);
     }
@@ -26,7 +33,6 @@ export default function SignUpForm({ handleChangeLoginView }) {
   return (
     <>
       <Box
-        component="form"
         sx={{
           mt: 5,
           display: "flex",
@@ -37,46 +43,56 @@ export default function SignUpForm({ handleChangeLoginView }) {
         }}
       >
         <Paper sx={{ p: 5, width: "50%" }}>
-          <FormGroup sx={{ m: 3 }}>
-            <TextField
-              name="firstName"
-              placeholder="First Name"
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <FormGroup sx={{ m: 3 }}>
-            <TextField
-              name="lastName"
-              placeholder="Last Name"
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <FormGroup sx={{ m: 3 }}>
-            <TextField
-              name="email"
-              placeholder="Email Address"
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <FormGroup sx={{ m: 3 }}>
-            <TextField
-              name="password"
-              placeholder="Password"
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <Grid container>
-            <Grid
-              item
-              sx={{ m: "auto", mt: 3 }}
-              onClick={handleChangeLoginView}
+          <form onSubmit={handleSubmit}>
+            <FormGroup sx={{ m: 3 }}>
+              <TextField
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup sx={{ m: 3 }}>
+              <TextField
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup sx={{ m: 3 }}>
+              <TextField
+                type="text"
+                name="email"
+                placeholder="Email Address"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup sx={{ m: 3 }}>
+              <TextField
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <Button
+              type="submit"
+              variant="outlined"
+              sx={{ width: "90%", mt: 1 }}
             >
-              {"Already have an account?"}
+              Register
+            </Button>
+            <Grid container>
+              <Grid
+                item
+                sx={{ m: "auto", mt: 3 }}
+                onClick={handleChangeLoginView}
+              >
+                {"Already have an account?"}
+              </Grid>
             </Grid>
-          </Grid>
-          <Button variant="outlined" sx={{ width: "90%", mt: 3 }}>
-            Register
-          </Button>
+          </form>
         </Paper>
       </Box>
     </>
