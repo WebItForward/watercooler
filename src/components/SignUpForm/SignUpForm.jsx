@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Button, FormGroup, Grid, Paper, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import * as usersApi from "../../utilities/users-api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SignUpForm({ handleChangeLoginView }) {
   const [credentials, setCredentials] = useState({
@@ -12,6 +12,7 @@ export default function SignUpForm({ handleChangeLoginView }) {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { signup } = useAuth();
 
   function handleChange(evt) {
     setCredentials({
@@ -23,13 +24,13 @@ export default function SignUpForm({ handleChangeLoginView }) {
   async function handleSubmit(evt) {
     evt.preventDefault();
     try {
-      const user = await usersApi.signUp(credentials);
-      setCredentials(user);
+      await signup(credentials);
       navigate("/messenger");
     } catch (error) {
       setError(error);
     }
   }
+
   return (
     <>
       <Box

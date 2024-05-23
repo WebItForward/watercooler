@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, FormGroup, Grid, Paper, TextField } from "@mui/material";
-import * as usersApi from "../../utilities/users-api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginForm({ handleChangeLoginView }) {
   const [credentials, setCredentials] = useState({
@@ -10,6 +10,7 @@ export default function LoginForm({ handleChangeLoginView }) {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   function handleChange(evt) {
     setCredentials({
@@ -21,8 +22,7 @@ export default function LoginForm({ handleChangeLoginView }) {
   async function handleSubmit(evt) {
     evt.preventDefault();
     try {
-      const user = await usersApi.login(credentials);
-      setCredentials(user);
+      await login(credentials);
       navigate("/messenger");
     } catch (error) {
       setError(error);
