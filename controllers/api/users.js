@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -8,6 +8,7 @@ module.exports = {
   loginUser,
   updateUser,
   deleteUser,
+  checkToken,
 };
 
 async function indexUsers(req, res) {
