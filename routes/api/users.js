@@ -9,4 +9,6 @@ router.post("/login", userCtrl.loginUser);
 
 router.get("/check-token", ensureLoggedIn, userCtrl.checkToken);
 
+router.get("/:id", ensureLoggedIn, userCtrl.getUserById);
+
 module.exports = router;

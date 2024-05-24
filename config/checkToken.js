@@ -1,22 +1,26 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-module.exports = function (req, res, next) {
-  // Check for the token being sent in a header or as a query param
-  let token = req.get("Authorization") || req.query.token;
-  // Default to null
-  req.user = null;
-  if (!token) return next();
-  // Remove the 'Bearer ' that was included in the token header
-  token = token.replace("Bearer ", "");
-  // Check if token is valid and not expired
-  jwt.verify(token, process.env.SECRET, function (err, decoded) {
-    // Invalid token if err
-    if (err) return next();
-    // decoded is the entire token payload
-    req.user = decoded.user;
-    // If interested in the expiration,
-    // and we just happen to be...
-    req.exp = new Date(decoded.exp * 1000);
-    return next();
-  });
+module.exports = async function (req, res, next) {
+  const token = req.get("Authorization")?.replace("Bearer ", "");
+  console.log("Token received:", token); // Log the token received
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET);
+      console.log("Token decoded:", decoded); // Log the decoded token
+      req.user = await User.findById(decoded.user._id);
+      if (!req.user) {
+        console.log("User not found");
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      console.log("User found:", req.user); // Log the user found
+    } catch (err) {
+      console.log("Token verification failed:", err);
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+  } else {
+    console.log("No token provided");
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  next();
 };

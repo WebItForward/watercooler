@@ -9,6 +9,7 @@ module.exports = {
   updateUser,
   deleteUser,
   checkToken,
+  getUserById,
 };
 
 async function indexUsers(req, res) {
@@ -70,4 +71,15 @@ function checkToken(req, res) {
 
 function createJWT(user) {
   return jwt.sign({ user }, process.env.SECRET, { expiresIn: "24h" });
+}
+
+async function getUserById(req, res) {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(400).json({ error: "No User Found..." });
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user...", error);
+    res.status(500).json({ error: error.message });
+  }
 }
