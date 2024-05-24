@@ -4,7 +4,7 @@ import LoginForm from "../../components/LoginForm/LoginForm";
 import SignUpForm from "../../components/SignUpForm/SignUpForm";
 
 export default function HomePage() {
-  const [loginView, setLoginView] = useState(false);
+  const [loginView, setLoginView] = useState(true);
 
   function handleChangeLoginView() {
     setLoginView(!loginView);

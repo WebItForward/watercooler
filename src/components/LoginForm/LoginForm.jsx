@@ -10,7 +10,7 @@ export default function LoginForm({ handleChangeLoginView }) {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   function handleChange(evt) {
     setCredentials({
@@ -23,7 +23,7 @@ export default function LoginForm({ handleChangeLoginView }) {
     evt.preventDefault();
     try {
       await login(credentials);
-      navigate("/messenger");
+      navigate(`/profile/${user._id}`);
     } catch (error) {
       setError(error);
     }
