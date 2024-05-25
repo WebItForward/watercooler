@@ -24,7 +24,6 @@ async function indexUsers(req, res) {
 
 async function createUser(req, res) {
   try {
-    console.log("Made it to the controller...");
     const user = await User.create(req.body);
     const token = createJWT(user);
     res.json(token);
@@ -36,6 +35,7 @@ async function createUser(req, res) {
 
 async function loginUser(req, res) {
   try {
+    console.log("working... from controller");
     const user = await User.findOne({ email: req.body.email });
     if (!user) throw new Error();
     const match = await bcrypt.compare(req.body.password, user.password);

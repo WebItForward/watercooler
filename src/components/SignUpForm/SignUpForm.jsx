@@ -12,7 +12,7 @@ export default function SignUpForm({ handleChangeLoginView }) {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { signup } = useAuth();
+  const { signup, user } = useAuth();
 
   function handleChange(evt) {
     setCredentials({
@@ -25,7 +25,8 @@ export default function SignUpForm({ handleChangeLoginView }) {
     evt.preventDefault();
     try {
       await signup(credentials);
-      navigate("/messenger");
+      console.log(credentials);
+      navigate(`/profile/${user._id}`);
     } catch (error) {
       setError(error);
     }
@@ -49,6 +50,7 @@ export default function SignUpForm({ handleChangeLoginView }) {
               <TextField
                 type="text"
                 name="firstName"
+                autoComplete="true"
                 placeholder="First Name"
                 onChange={handleChange}
               />
@@ -57,6 +59,7 @@ export default function SignUpForm({ handleChangeLoginView }) {
               <TextField
                 type="text"
                 name="lastName"
+                autoComplete="true"
                 placeholder="Last Name"
                 onChange={handleChange}
               />
@@ -65,6 +68,7 @@ export default function SignUpForm({ handleChangeLoginView }) {
               <TextField
                 type="text"
                 name="email"
+                autoComplete="true"
                 placeholder="Email Address"
                 onChange={handleChange}
               />
@@ -73,6 +77,7 @@ export default function SignUpForm({ handleChangeLoginView }) {
               <TextField
                 type="password"
                 name="password"
+                autoComplete="true"
                 placeholder="Password"
                 onChange={handleChange}
               />
